@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/Io";
 import Button from "../Button";
+
 interface ModalProps {
   isOpen?: boolean;
   onClose: () => void;
@@ -198,6 +199,7 @@ const Modal: React.FC<ModalProps> = ({
                     label={actionLabel}
                   />
                 </div>
+                {footer}
               </div>
             </div>
           </div>

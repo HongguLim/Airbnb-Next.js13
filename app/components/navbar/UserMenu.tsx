@@ -4,8 +4,10 @@ import React, { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import Menuitem from "./Menuitem";
+import useRegisterModal from "../hooks/useRegisterModal";
 
 export default function UserMenu() {
+  const registerModal = useRegisterModal();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleIsOpen = useCallback(() => {
@@ -29,7 +31,7 @@ export default function UserMenu() {
           transition 
           cursor-pointer"
         >
-          Airbnb your home
+          당신의 공간을 에어비앤비하세요
         </div>
         <div
           onClick={toggleIsOpen}
@@ -76,8 +78,8 @@ flex-col
 cursor-pointer"
           >
             <>
-              <Menuitem onClick={() => {}} label="Login" />
-              <Menuitem onClick={() => {}} label="Sign up" />
+              <Menuitem onClick={() => {}} label="로그인" />
+              <Menuitem onClick={registerModal.onOpen} label="회원가입" />
             </>
           </div>
         </div>
