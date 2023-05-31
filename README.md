@@ -12,7 +12,8 @@
 - Zustand
 - Prisma
 - MongoDB
-- NextAuth 2023
+- NextAuth-2023
+- react-hook-form
 
 ## 🛠️ 커밋 컨벤션
 

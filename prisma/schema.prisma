@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// @id: 필드를 기본 키(primary key)로 설정합니다.
+// @default(auto()): 필드의 기본값을 자동으로 생성하도록 설정합니다. 여기서는 id 필드의 기본값이 자동으로 생성되도록 설정되어 있습니다.
+// @map("_id"): 데이터베이스에 저장될 때의 필드 이름을 _id로 설정합니다.
+// @db.ObjectId: 데이터베이스의 데이터 타입을 ObjectId로 설정합니다. MongoDB에서는 주로 _id 필드에 사용됩니다.
+// @unique: 이 필드의 값이 테이블 내에서 고유해야함을 나타냅니다. 이 설정은 email 필드에 적용되어, 사용자마다 이메일이 다르게 설정되도록 강제합니다.
+// @default(now()): 필드의 기본값을 현재 시간으로 설정합니다. createdAt 필드에 이 속성이 사용되어, 새로운 레코드가 생성될 때마다 현재 시간이 자동으로 기록되도록 설정되어 있습니다.
+// @updatedAt: 이 필드는 레코드가 마지막으로 업데이트된 시간을 자동으로 기록합니다.
+
+model User {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  name            String?
+  email           String?   @unique
+  emailVerified   DateTime?
+  image           String?
+  hashedPassword  String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  favoriteIds     String[] @db.ObjectId
+
+  accounts Account[]
+  listings Listing[]
+  reservations Reservation[]
+}
+
+model Account {
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  userId             String   @db.ObjectId
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.String
+  access_token       String?  @db.String
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.String
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Listing {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  title               String
+  description         String
+  imageSrc            String
+  createdAt           DateTime @default(now())
+  category            String
+  roomCount           Int
+  bathroomCount       Int
+  guestCount          Int
+  locationValue       String
+  userId              String @db.ObjectId
+  price               Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reservations Reservation[]
+}
+
+model Reservation {
+  id                   String @id @default(auto()) @map("_id") @db.ObjectId
+  userId               String @db.ObjectId
+  listingId            String @db.ObjectId  
+  startDate            DateTime
+  endDate              DateTime
+  totalPrice           Int
+  createdAt            DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listing Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+}
